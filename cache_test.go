@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/allegro/bigcache"
+	"github.com/bluele/gcache"
 	"github.com/coocood/freecache"
 	"github.com/muesli/cache2go"
 	cache "github.com/patrickmn/go-cache"
@@ -94,6 +95,26 @@ func BenchmarkBigCache(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 			value := fmt.Sprintf("%20d", i)
 			c.Set(fmt.Sprintf("item%d", i), []byte(value))
+		}
+	})
+
+	b.Run("Get", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			value, err := c.Get(fmt.Sprintf("item%d", i))
+			if err == nil {
+				_ = value
+			}
+		}
+	})
+}
+
+func BenchmarkGCache(b *testing.B) {
+	c := gcache.New(b.N).LRU().Build()
+
+	b.Run("Set", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			value := fmt.Sprintf("%20d", i)
+			c.Set(fmt.Sprintf("item%d", i), value)
 		}
 	})
 
