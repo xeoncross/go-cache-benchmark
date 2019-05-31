@@ -2,7 +2,6 @@ package gocachebenchmarks
 
 import (
 	"fmt"
-	"strconv"
 	"sync"
 	"testing"
 	"time"
@@ -16,20 +15,24 @@ import (
 	cache "github.com/patrickmn/go-cache"
 )
 
+func toKey(i int) string {
+	return fmt.Sprintf("item:%d", i)
+}
+
 // We will be storing many short strings as the key and value
 func BenchmarkKodingCache(b *testing.B) {
 	c := koding.NewMemoryWithTTL(time.Duration(60) * time.Second)
 
 	b.Run("Set", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			c.Set(strconv.FormatInt(int64(i), 10), i)
+			c.Set(toKey(i), toKey(i))
 		}
 	})
 
 	b.Run("Get", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 
-			value, err := c.Get(strconv.FormatInt(int64(i), 10))
+			value, err := c.Get(toKey(i))
 			if err == nil {
 				_ = value
 			}
@@ -43,14 +46,14 @@ func BenchmarkHashicorpLRU(b *testing.B) {
 
 	b.Run("Set", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			c.Add(i, i)
+			c.Add(toKey(i), toKey(i))
 		}
 	})
 
 	b.Run("Get", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 
-			value, err := c.Get(i)
+			value, err := c.Get(toKey(i))
 			if err == true {
 				_ = value
 			}
@@ -63,14 +66,13 @@ func BenchmarkCache2Go(b *testing.B) {
 
 	b.Run("Set", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value := fmt.Sprintf("%20d", i)
-			c.Add(fmt.Sprintf("item%d", i), 1*time.Minute, value)
+			c.Add(toKey(i), 1*time.Minute, toKey(i))
 		}
 	})
 
 	b.Run("Get", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value, err := c.Value(fmt.Sprintf("item%d", i))
+			value, err := c.Value(toKey(i))
 			if err == nil {
 				_ = value
 			}
@@ -83,14 +85,13 @@ func BenchmarkGoCache(b *testing.B) {
 
 	b.Run("Set", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value := fmt.Sprintf("%20d", i)
-			c.Add(fmt.Sprintf("item%d", i), value, cache.DefaultExpiration)
+			c.Add(toKey(i), toKey(i), cache.DefaultExpiration)
 		}
 	})
 
 	b.Run("Get", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value, found := c.Get(fmt.Sprintf("item%d", i))
+			value, found := c.Get(toKey(i))
 			if found {
 				_ = value
 			}
@@ -103,14 +104,13 @@ func BenchmarkFreecache(b *testing.B) {
 
 	b.Run("Set", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value := fmt.Sprintf("%20d", i)
-			c.Set([]byte(fmt.Sprintf("item%d", i)), []byte(value), 60)
+			c.Set([]byte(toKey(i)), []byte(toKey(i)), 60)
 		}
 	})
 
 	b.Run("Get", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value, err := c.Get([]byte(fmt.Sprintf("item%d", i)))
+			value, err := c.Get([]byte(toKey(i)))
 			if err == nil {
 				_ = value
 			}
@@ -136,14 +136,13 @@ func BenchmarkBigCache(b *testing.B) {
 
 	b.Run("Set", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value := fmt.Sprintf("%20d", i)
-			c.Set(fmt.Sprintf("item%d", i), []byte(value))
+			c.Set(toKey(i), []byte(toKey(i)))
 		}
 	})
 
 	b.Run("Get", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value, err := c.Get(fmt.Sprintf("item%d", i))
+			value, err := c.Get(toKey(i))
 			if err == nil {
 				_ = value
 			}
@@ -156,14 +155,13 @@ func BenchmarkGCache(b *testing.B) {
 
 	b.Run("Set", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value := fmt.Sprintf("%20d", i)
-			c.Set(fmt.Sprintf("item%d", i), value)
+			c.Set(toKey(i), toKey(i))
 		}
 	})
 
 	b.Run("Get", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value, err := c.Get(fmt.Sprintf("item%d", i))
+			value, err := c.Get(toKey(i))
 			if err == nil {
 				_ = value
 			}
@@ -177,14 +175,13 @@ func BenchmarkSyncMap(b *testing.B) {
 
 	b.Run("Set", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value := fmt.Sprintf("%20d", i)
-			m.Store(fmt.Sprintf("item%d", i), value)
+			m.Store(toKey(i), toKey(i))
 		}
 	})
 
 	b.Run("Get", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			value, found := m.Load(fmt.Sprintf("item%d", i))
+			value, found := m.Load(toKey(i))
 			if found {
 				_ = value
 			}
