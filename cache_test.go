@@ -2,6 +2,7 @@ package gocachebenchmarks
 
 import (
 	"fmt"
+	"strconv"
 	"sync"
 	"testing"
 	"time"
@@ -9,11 +10,53 @@ import (
 	"github.com/allegro/bigcache"
 	"github.com/bluele/gcache"
 	"github.com/coocood/freecache"
+	hashicorp "github.com/hashicorp/golang-lru"
+	koding "github.com/koding/cache"
 	"github.com/muesli/cache2go"
 	cache "github.com/patrickmn/go-cache"
 )
 
 // We will be storing many short strings as the key and value
+func BenchmarkKodingCache(b *testing.B) {
+	c := koding.NewMemoryWithTTL(time.Duration(60) * time.Second)
+
+	b.Run("Set", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			c.Set(strconv.FormatInt(int64(i), 10), i)
+		}
+	})
+
+	b.Run("Get", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+
+			value, err := c.Get(strconv.FormatInt(int64(i), 10))
+			if err == nil {
+				_ = value
+			}
+		}
+	})
+}
+
+func BenchmarkHashicorpLRU(b *testing.B) {
+	// c := cache2go.Cache("test")
+	c, _ := hashicorp.New(10)
+
+	b.Run("Set", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			c.Add(i, i)
+		}
+	})
+
+	b.Run("Get", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+
+			value, err := c.Get(i)
+			if err == true {
+				_ = value
+			}
+		}
+	})
+}
 
 func BenchmarkCache2Go(b *testing.B) {
 	c := cache2go.Cache("test")
