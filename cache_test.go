@@ -13,6 +13,7 @@ import (
 	koding "github.com/koding/cache"
 	"github.com/muesli/cache2go"
 	cache "github.com/patrickmn/go-cache"
+	ristretto "github.com/dgraph-io/ristretto"
 )
 
 func toKey(i int) string {
@@ -168,6 +169,31 @@ func BenchmarkGCache(b *testing.B) {
 		}
 	})
 }
+
+func BenchmarkRistretto(b *testing.B) {
+	cache, _ := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e7,     // number of keys to track frequency of (10M).
+		MaxCost:     1 << 30, // maximum cost of cache (1GB).
+		BufferItems: 64,      // number of keys per Get buffer.
+	})
+	
+	b.Run("Set", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			cache.Set(toKey(i), toKey(i), 1)
+		}
+	})
+
+	b.Run("Get", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			value, ok := cache.Get(toKey(i))
+			if ok {
+				_ = value
+			}
+		}
+	})
+	
+}
+
 
 // No expire, but helps us compare performance
 func BenchmarkSyncMap(b *testing.B) {
