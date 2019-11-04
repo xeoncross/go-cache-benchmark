@@ -35,7 +35,7 @@ PASS
 ok  	github.com/Xeoncross/go-cache-benchmark	45.898s
 ```
 
-![benchmark chart](benchmark.png)
+![benchmark](benchmarks.png)
 
 _Note: sync.Map does not support expiration and is only included for comparison_
 _Note: hashicorp/golang-lru does not support expires/TTL and is only included for comparison_
