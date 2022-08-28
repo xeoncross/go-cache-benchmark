@@ -10,29 +10,32 @@ Benchmarks of in-memory cache libraries for Go with expiration/TTL support.
 ## Results
 
 ```
-goos: darwin
+goos: linux
 goarch: amd64
 pkg: github.com/Xeoncross/go-cache-benchmark
-BenchmarkKodingCache/Set-8         	 1000000	      1357 ns/op	     424 B/op	       5 allocs/op
-BenchmarkKodingCache/Get-8         	 2061524	       585 ns/op	      23 B/op	       2 allocs/op
-BenchmarkHashicorpLRU/Set-8        	 2028216	       592 ns/op	     166 B/op	       8 allocs/op
-BenchmarkHashicorpLRU/Get-8        	 5974563	       202 ns/op	      40 B/op	       3 allocs/op
-BenchmarkCache2Go/Set-8            	 1000000	      1284 ns/op	     370 B/op	       9 allocs/op
-BenchmarkCache2Go/Get-8            	 2805157	       392 ns/op	      39 B/op	       3 allocs/op
-BenchmarkGoCache/Set-8             	 1000000	      1050 ns/op	     263 B/op	       5 allocs/op
-BenchmarkGoCache/Get-8             	 4109612	       287 ns/op	      23 B/op	       2 allocs/op
-BenchmarkFreecache/Set-8           	 1814077	       682 ns/op	      49 B/op	       4 allocs/op
-BenchmarkFreecache/Get-8           	 4993617	       240 ns/op	      24 B/op	       2 allocs/op
-BenchmarkBigCache/Set-8            	 1683318	       656 ns/op	      55 B/op	       4 allocs/op
-BenchmarkBigCache/Get-8            	 2758429	       399 ns/op	      43 B/op	       3 allocs/op
-BenchmarkGCache/Set-8              	 2181370	       597 ns/op	     191 B/op	       8 allocs/op
-BenchmarkGCache/Get-8              	 5746874	       207 ns/op	      39 B/op	       3 allocs/op
-BenchmarkRistretto/Set-8           	 1467294	       975 ns/op	     151 B/op	       7 allocs/op
-BenchmarkRistretto/Get-8           	 2731618	       431 ns/op	      47 B/op	       3 allocs/op
-BenchmarkSyncMap/Set-8             	 1000000	      1131 ns/op	     242 B/op	       9 allocs/op
-BenchmarkSyncMap/Get-8             	 4409548	       267 ns/op	      23 B/op	       2 allocs/op
+cpu: 12th Gen Intel(R) Core(TM) i9-12900H
+BenchmarkKodingCache/Set-20              1000000                1228 ns/op           424 B/op          5 allocs/op
+BenchmarkKodingCache/Get-20              2796266               556.8 ns/op            23 B/op          1 allocs/op
+BenchmarkHashicorpLRU/Set-20             3767683               314.9 ns/op           166 B/op          8 allocs/op
+BenchmarkHashicorpLRU/Get-20            12501775               93.07 ns/op            40 B/op          3 allocs/op
+BenchmarkCache2Go/Set-20                 1000000                1147 ns/op           370 B/op          9 allocs/op
+BenchmarkCache2Go/Get-20                 3778624               299.9 ns/op            39 B/op          2 allocs/op
+BenchmarkGoCache/Set-20                  2193494               760.0 ns/op           196 B/op          7 allocs/op
+BenchmarkGoCache/Get-20                  3419902               335.8 ns/op            23 B/op          1 allocs/op
+BenchmarkFreecache/Set-20                3461131               416.0 ns/op            49 B/op          3 allocs/op
+BenchmarkFreecache/Get-20                9705312               123.3 ns/op            24 B/op          2 allocs/op
+BenchmarkBigCache/Set-20                 2625801               561.1 ns/op            75 B/op          4 allocs/op
+BenchmarkBigCache/Get-20                 2931568               441.2 ns/op            52 B/op          3 allocs/op
+BenchmarkGCache/Set-20                   2898984               396.7 ns/op           191 B/op          7 allocs/op
+BenchmarkGCache/Get-20                   9151436               121.9 ns/op            39 B/op          2 allocs/op
+BenchmarkRistretto/Set-20                1798761               790.8 ns/op           299 B/op          7 allocs/op
+BenchmarkRistretto/Get-20                2061169               590.2 ns/op            47 B/op          3 allocs/op
+BenchmarkWTF/Set-20                      5397871               225.5 ns/op            79 B/op          5 allocs/op
+BenchmarkWTF/Get-20                     16704721               76.09 ns/op            23 B/op          1 allocs/op
+BenchmarkSyncMap/Set-20                  2144700               756.5 ns/op           158 B/op          7 allocs/op
+BenchmarkSyncMap/Get-20                  3089744               358.1 ns/op            23 B/op          1 allocs/op
 PASS
-ok  	github.com/Xeoncross/go-cache-benchmark	45.898s
+ok      github.com/Xeoncross/go-cache-benchmark 52.422s
 ```
 
 ![benchmark](benchmarks.png)
