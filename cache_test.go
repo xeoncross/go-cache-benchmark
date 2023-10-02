@@ -14,6 +14,7 @@ import (
 	"github.com/muesli/cache2go"
 	cache "github.com/patrickmn/go-cache"
 	ristretto "github.com/dgraph-io/ristretto"
+	"github.com/irr123/wtfcache"
 )
 
 func toKey(i int) string {
@@ -194,6 +195,24 @@ func BenchmarkRistretto(b *testing.B) {
 	
 }
 
+func BenchmarkWTF(b *testing.B) {
+	cache := wtfcache.New[string, string]().MakeWithLock(b.N)
+
+	b.Run("Set", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			cache.Set(toKey(i), toKey(i))
+		}
+	})
+
+	b.Run("Get", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			value, ok := cache.Get(toKey(i))
+			if ok {
+				_ = value
+			}
+		}
+	})
+}
 
 // No expire, but helps us compare performance
 func BenchmarkSyncMap(b *testing.B) {
